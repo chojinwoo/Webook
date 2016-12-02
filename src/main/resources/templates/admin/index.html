@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Title</title>
+    <script type="text/javascript" src="js/libs/jquery.min.js"></script>
+
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/libs/SGrid.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/font-awesome.css"/>
+    <link rel="stylesheet" href="css/SGrid.css"/>
+</head>
+<body>
+    <div class="container-fluid">
+        <div><h2>관리자</h2></div>
+        <div id="books_kind_grid"></div>
+        <div id="books_grid" style="margin-top:80px;"></div>
+    </div>
+<script>
+    $(document).ready(function () {
+        var grid1 = $('#books_kind_grid').SGrid({
+            width: 'auto',
+            height: 300,
+            resize: true,
+            lazy:true,
+            key: 'books_kind_cd',
+            title: '책 종류',
+            header: ['코드', '이름', '경로', '장르', '입력일자'],
+            cols: ['books_kind_cd', 'books_kind_nm', 'books_kind_path', 'books_category_cd', 'ins_date'],
+            colsWidth: [100, 200, 300, 300, 500],
+            colsAlign: ['left', 'center', 'left', 'center', 'center'],
+            colsType: ['text', 'text', 'text', {'select':{'00010':'판타지','00020':'무협','00030':'라이트노벨','00040':'게임판타지','00050':'퓨전판타지'}}, 'hide'],
+            data: '/books_kind_findAll',
+            dataRepo: 'http',
+            btn: {upd: true, ins: true, del: true, find: true, refresh: true, excel: true},
+            functional: {
+                del: function (dd) {
+                    console.log(JSON.stringify(dd));
+                },
+                upd: function (dd) {
+                    $.ajax({
+                        url:'/books_kind_update',
+                        data:"upd="+JSON.stringify(dd),
+                        type:'post',
+                        dataType:'json',
+                        success:function(data) {
+                            grid1.reData(data);
+                        }
+                    })
+                },
+                ins: function (dd) {
+                    $.ajax({
+                        url:'/books_kind_save',
+                        data:"ins="+JSON.stringify(dd),
+                        type:'post',
+                        dataType:'json',
+                        success:function(data) {
+                            grid1.reData(data);
+                        }
+                    })
+                }
+            }
+        });
+
+        var grid2 = $('#books_grid').SGrid({
+            width: 'auto',
+            height: 300,
+            resize: true,
+            lazy:true,
+            key: 'books_seq',
+            title: '책',
+            header: ['seq', '코드', '책이름', '파일명', '입력일자'],
+            cols: ['books_seq', 'books_kind_cd', 'books_nm', 'books_file_nm', 'ins_date'],
+            colsWidth: [100, 100, 200, 300, 200],
+            colsAlign: ['left', 'center', 'center', 'left', 'left'],
+            colsType: ['hide', 'text', 'text', 'text', 'hide'],
+            colsFileInsBtn:{ /*dataType FormData*/
+                text:'파일업로드',
+                type:'file',
+                mappingCol:'books_file_nm'
+            },
+            data: '/books_findAll?books_kind_cd=0010',
+            dataRepo: 'http',
+            btn: {upd: true, ins: true, del: true, find: true, refresh: true, excel: true},
+            functional: {
+                del: function (dd) {
+                    console.log(JSON.stringify(dd));
+                },
+                upd: function (dd) {
+                    $.ajax({
+                        url:'/books_update',
+                        data:"upd="+JSON.stringify(dd),
+                        type:'post',
+                        dataType:'json',
+                        success:function(data) {
+                            grid2.reData(data);
+                        }
+                    })
+                },
+                ins: function (dd, form) {
+                    $.ajax({
+                        url:'/books_save_enctype',
+                        data:form,
+                        processData: false,
+                        contentType: false,
+                        type: 'post',
+                        dataType:'json',
+                        success:function(data) {
+                            grid2.reData(data);
+                        }
+                    })
+                }
+            }
+        })
+
+
+        var kind_cd = '0010';
+        grid2.on('bs.SGrid.ins_after', function(e, dd) {
+            grid2.setColumnValue(dd, 'books_kind_cd', kind_cd );
+        })
+
+        grid1.on('bs.SGrid.onclick', function (e, d1) {
+            kind_cd = d1.books_kind_cd;
+            $.ajax({
+                url: '/books_findAll?books_kind_cd=' + kind_cd,
+                type: 'post',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    grid2.reData(data);
+                }, error: function (xhr, status, error) {
+                    alert("Json load Error : " + error);
+                }
+            })
+        })
+    })
+
+</script>
+</body>
+</html>

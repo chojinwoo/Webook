@@ -1,0 +1,222 @@
+body {
+    overflow: auto;
+    width:100%;
+    height:100%;
+    background-color:#4E4E4E;
+}
+#main {
+    overflow: hidden;
+    position: absolute;
+    background-color:#FAFFE5;
+    top:0px;
+    right:0px;
+    width: 100%;
+    height: 100%;
+    border-radius:5px;
+    z-index: 500;
+}
+#area {
+    width: 80%;
+    height: 85%;
+    margin: 60px auto;
+    max-width: 1250px;
+}
+#area iframe {
+    border: none;
+}
+
+.reader-header {
+    position:absolute;
+    z-index:20000;
+    width:100%;
+    height:40px;
+    line-height:40px;
+}
+
+.fa {
+    font-size:18px;
+    padding:5px;
+    color:black;
+    cursor:pointer;
+}
+
+.full-left {
+    float:left;
+}
+
+.full-right {
+    float:right;
+}
+
+.half-2 {
+    width:50%;
+}
+
+.half-4 {
+    width:25%;
+}
+
+.chapter-menu {
+    position:fixed;
+    top:0px;
+    left:0px;
+    background-color:#4E4E4E;
+    height:100%;
+    width:300px;
+    z-index:100;
+}
+
+.chapter-view {
+    width: 100%;
+    height: 100%;
+    background-color: #6B6B6B;
+    margin-left: 20px;
+    overflow: auto;
+}
+
+.chapter-view > .view {
+    list-style:none;
+    padding-left:20px;
+    color:white;
+}
+
+.chapter-view > .view > li {
+    padding-top:3px;
+    padding-bottom:3px;
+}
+
+.chapter-view > .view > li:hover {
+    color:#B6CBFF;
+    cursor:pointer;
+}
+
+.hide {
+    display:none;
+}
+
+.after {
+    left:300px;
+}
+
+.chapter-search {
+    padding-top:10px;
+    padding-left:20px;
+    padding-right:10px;
+}
+
+.chapter-search > .search{
+    width:100%;
+    height:30px;
+    border-radius: 5px;
+}
+
+.book-title {
+    font-size:18px;
+    font-family: fantasy;
+}
+
+.setting-container {
+    width:200px;
+    height:240px;
+    position:absolute;
+    top:40px;
+    right:10px;
+    background-color:#FCFFC4 ;
+    border-radius: 5px;
+    z-index:30000;
+}
+
+.setting-section {
+    width:100%;
+    height:60px;
+    line-height:60px;
+    text-align:center;
+}
+
+.setting-section:not(.last) {
+
+    border-bottom:1px solid #cccccc;
+}
+
+.fa-sm {
+    font-size:15px;
+}
+
+.bold {
+    font-weight:bold;
+}
+
+.fa-padding-left {
+    padding-left:20px;
+}
+
+.fa-padding-right {
+    padding-right:20px;
+}
+
+/*#setting-page {*/
+    /*width:60%;*/
+    /*height: 29px;*/
+    /*border-radius: 5px;*/
+/*}*/
+
+/*#setting-page-btn {*/
+/*width:50px;*/
+/*height:25px;*/
+/*background-color:#DEDEDE;*/
+/*border-top-left-radius: 5px;*/
+/*border-bottom-left-radius: 5px;*/
+/*position: absolute;*/
+/*top: 0px;*/
+/*right: 0px;*/
+/*}*/
+
+#book-fade {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+    z-index:10000;
+}
+
+.gotoChapter {
+    color:white;
+}
+
+.gotoChapter:hover {
+    color:#D8D68E;
+}
+
+/* For iPad portrait layouts only */
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: portrait) {
+    #area iframe {
+        width: 490px;
+        height: 740px;
+    }
+}
+/*For iPad landscape layouts only */
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: landscape) {
+    #area iframe {
+        width: 490px;
+        height: 515px;
+    }
+}
+/* For iPhone portrait layouts only */
+@media only screen and (max-device-width: 480px) and (orientation: portrait) {
+    #area {
+        width: 286px;
+        height: 532px;
+    }
+    #area iframe {
+        width: 286px;
+        height: 532px;
+    }
+}
+/* For iPhone landscape layouts only */
+@media only screen and (max-device-width: 480px) and (orientation: landscape) {
+    #area iframe {
+        width: 256px;
+        height: 124px;
+    }
+}

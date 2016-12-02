@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Basic ePubJS Example</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+
+    <!-- EPUBJS Renderer -->
+    <script src="js/libs/jquery-3.1.1.js"></script>
+    <script src="js/epub.min.js"></script>
+    <script src="js/libs/zip.min.js"></script>
+    <!-- Full Screen -->
+    <script src="js/libs/screenfull.min.js"></script>
+
+    <script src="js/libs/jquery.touchSwipe.min.js"></script>
+    <script src="js/webook.render.js"></script>
+
+    <link href="css/font-awesome.css" rel="stylesheet"/>
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <link href="css/reader.css" rel="stylesheet"/>
+
+
+</head>
+<body>
+<div class="chapter-menu hide">
+    <div class="chapter-search">
+        <input type="text" class="search" placeholder="Search..."/>
+    </div>
+    <div class="chapter-view">
+        <ul class="view" id="chapter-list">
+        </ul>
+    </div>
+</div>
+<div id="main">
+
+    <div id="book-fade"></div>
+    <div class="reader-header">
+        <div class="full-left half-4">
+            <span style="margin-left:10px;"><i class="fa fa-times" aria-hidden="true"></i></span>
+            <span><i class="fa fa-list list" aria-hidden="true"></i></span>
+        </div>
+        <div class="full-left half-2 book-title" style="text-align:center;">
+
+        </div>
+        <div class="full-right half-4" style="text-align: right; position:relative;">
+            <span><i class="fa fa-cog" aria-hidden="true"></i></span>
+            <div class="setting-container hide">
+                <div class="setting-section">
+                    <span><i id="setting-bold-disable" class="fa fa-font fa-sm fa-padding-right" aria-hidden="true"></i></span>
+                    <span><i id="setting-bold" class="fa fa-font bold fa-padding-left" aria-hidden="true"></i></span>
+                </div>
+                <div class="setting-section">
+                    <span><i id="setting-font-minus" class="fa fa-minus fa-padding-right" aria-hidden="true"></i></span>
+                    <span><i id="setting-font-plus" class="fa fa-plus fa-padding-left" aria-hidden="true"></i></span>
+                </div>
+                <div class="setting-section">
+                    <span><i id="setting-sun" class="fa fa-moon-o fa-padding-right" aria-hidden="true"></i></span>
+                    <span><i id="setting-moon" class="fa fa-sun-o fa-padding-left" aria-hidden="true"></i></span>
+                </div>
+                <div class="setting-section last">
+                    <!--<span style="position:relative">-->
+                        <!--<input type="text" id="setting-page"/>-->
+                        <!--<button id="setting-page-btn" class="btn btn-sm" role="button">이동</button>-->
+                    <!--</span>-->
+                    <div class="form-group" style="padding-top: 15px;">
+                        <label class="sr-only" for="setting-page">Amount (in dollars)</label>
+                        <div class="input-group" style="padding-left: 5px;">
+                            <input type="text" id="setting-page" class="form-control" placeholder="page"/>
+                            <div class="input-group-addon" id="setting-page-btn">이동</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span style="margin-right:10px;"><i class="fa fa-expand" id="full-screen" aria-hidden="true"></i></span>
+        </div>
+    </div>
+    <!--<div id="prev" onclick="Book.prevPage();" class="arrow">‹</div>-->
+    <div id="area"></div>
+    <!--<div id="next" onclick="Book.nextPage();" class="arrow">›</div>-->
+</div>
+
+<script>
+
+    $(document).ready(function() {
+        var seq = $('#area').data('seq');
+        $.ajax({
+            url:'/findByBooks_seq/'+seq,
+            type:'post',
+            dataType:'json',
+            async:false,
+            success:function(data) {
+                var cfi = '';
+                $.each(data, function(i) {
+                    if(i == 0) {
+                        cfi = this.books_mark
+                    }
+                })
+                Book.gotoCfi(cfi);
+            }
+        })
+    })
+
+    $('.fa-times').on('click', function() {
+        $('.book-view').toggleClass('hide');
+        $('.book-header').show();
+        $('.book-body').show();
+        $('body').css('background-color', '#faffe5');
+    })
+
+    $('.reader-header .list').click(function() {
+        $('#main').toggleClass('after');
+        $('.chapter-menu').toggleClass('hide');
+        $(this).toggleClass("fa-list fa-chevron-left")
+    })
+
+    $('.fa-cog').click(function() {
+        $('.setting-container').toggleClass('hide');
+    })
+
+    $('#setting-bold').on('click', function() {
+        $('#area iframe').contents().find('p').css('font-weight', 'bold');
+    })
+
+    $('#setting-bold-disable').on('click', function() {
+        $('#area iframe').contents().find('p').css('font-weight', '');
+    })
+
+    $('#setting-font-minus').on('click', function() {
+        var fontSize = $('#area iframe').contents().find('p').css('font-size');
+        fontSize = fontSize.substring(0, fontSize.indexOf('p'));
+        fontSize = Number(fontSize) - 1;
+        $('#area iframe').contents().find('p').css('font-size', fontSize+'px');
+    })
+
+    $('#setting-font-plus').on('click', function() {
+        var fontSize = $('#area iframe').contents().find('p').css('font-size');
+        fontSize = fontSize.substring(0, fontSize.indexOf('p'));
+        fontSize = Number(fontSize) + 1;
+        $('#area iframe').contents().find('p').css('font-size', fontSize+'px');
+    })
+
+    $('#setting-sun').on('click', function() {
+        $('#main').css('background-color', '#FAFFE5');
+        $('#area iframe').contents().find('p').css('color', 'black');
+        $('.setting-container').css('background-color', '#FCFFC4');
+        $('.fa').css('color', 'black');
+        $('.book-title').css('color', 'black');
+    })
+
+    $('#setting-moon').on('click', function() {
+        $('#main').css('background-color', 'black');
+        $('#area iframe').contents().find('p').css('color', 'white');
+        $('.setting-container').css('background-color', '#A5AEE7');
+        $('.fa').css('color', '#FFFFFF');
+        $('.book-title').css('color', 'white');
+    })
+
+    $('#setting-page-btn').on('click' ,function() {
+        var page = $('#setting-page').val();
+        Book.gotoPage(page);
+        $('#setting-page').val('');
+    })
+
+    $("#book-fade").swipe( {
+        //Single swipe handler for left swipes
+        swipeLeft:function(event, direction, distance, duration, fingerCount) {
+            if(fingerCount == 0 || fingerCount == 1) {
+                if(distance > 100) {
+                    Book.nextPage();
+                }
+            }
+        },
+        swipeRight:function(event, direction, distance, duration, fingerCount) {
+            if(fingerCount == 0 || fingerCount == 1) {
+                if(distance > 100) {
+                    Book.prevPage();
+                }
+            }
+        },
+        //Default is 75px, set to 0 for demo so any distance triggers swipe
+        threshold:0
+    });
+
+
+
+    if(typeof screenfull !== 'undefined') {
+        $('#full-screen').on("click", function() {
+            screenfull.toggle($('#container')[0]);
+        });
+        if(screenfull.raw) {
+            document.addEventListener(screenfull.raw.fullscreenchange, function() {
+                $('#full-screen').toggleClass("fa-compress fa-expand");
+            });
+        }
+    }
+</script>
+</body>
+</html>

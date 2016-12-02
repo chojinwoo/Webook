@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>Title</title>
+    <script type="text/javascript" src="js/libs/jquery-3.1.1.js"></script>
+
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+
+    <script src="/js/libs/zip.min.js"></script>
+    <!-- File Storage -->
+    <!-- <script src="js/libs/localforage.min.js"></script> -->
+
+    <!-- Full Screen -->
+    <script src="/js/libs/screenfull.min.js"></script>
+
+    <!-- Render -->
+    <script src="/js/epub.min.js"></script>
+
+    <!-- Hooks -->
+    <script src="/js/hooks.min.js"></script>
+
+    <script src="js/webook.render.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+
+    <link rel="stylesheet" href="css/style.css"/>
+
+</head>
+<body sec:authorize="isAnonymous()">
+<style>
+    .container {
+        padding-left: 30%;
+        padding-right: 30%;
+        padding-top: 100px;
+    }
+    .form-signin-heading {
+        text-align: center;
+        font-family: fantasy;
+        font-size: 40px;
+    }
+</style>
+    <div class="container">
+
+        <form class="form-signin" action="/login" method="post">
+            <h2 class="form-signin-heading">Webook</h2>
+            <label for="inputId" class="sr-only">아이디</label>
+            <input type="text" id="inputId" name="id" class="form-control" placeholder="ID" required="required" autofocus="autofocus"/>
+            <label for="inputPassword" class="sr-only">비밀번호</label>
+            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="required"/>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="remember-me"/> 로그인 상태 유지
+                </label>
+            </div>
+            <button class="btn btn-lg btn-success btn-block" type="submit">로그인</button>
+        </form>
+    </div> <!-- /container -->
+</body>
+<body class="container-fluid" sec:authorize="isAuthenticated()">
+    <div class="book-header">
+        <div class="dropdown">
+            <a id="dLabel" data-target="#" role="button" aria-haspopup="true" aria-expanded="false">
+                전체
+                <span class="caret"></span>
+            </a>
+            <ul id="kind-menu" class="dropdown-menu" aria-labelledby="dLabel">
+                <li data-kind-cd="search"><input type="text" id="kind-search" class="form-control" placeholder="Search..."/></li>
+                <li data-kind-cd="all">전체</li>
+                <div class="panel-group" role="tablist" aria-multiselectable="true" th:each="category,idx : ${categorys}" th:id="@{'kind'+${idx.index}}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title" style="text-align:center;">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" th:href="@{'#collapse'+${idx.count}}" aria-expanded="true" aria-controls="collapseOne">
+                                    <span th:text="${category.books_category_nm}"></span>
+                                    <span class="caret"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div th:id="@{'collapse'+${idx.count}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <li class="kind" th:each="kind : ${booksKinds}" th:if="${kind.books_category_cd} == ${category.books_category_cd}" th:text="${kind.books_kind_nm}" th:attr="data-kind-cd=${kind.books_kind_cd}"></li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <li data-kind-cd="logout"><a href="/logout">로그아웃</a></li>
+            </ul>
+        </div>
+        <div class="left-menu">
+            <buttton type="button" class="btn btn-sm">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </buttton>
+        </div>
+        <div class="right-menu">
+            <buttton type="button" class="btn btn-sm">
+                <span class="glyphicon glyphicon-eye-open"></span>
+            </buttton>
+        </div>
+    </div>
+    <div class="log-menu" style="display:none;">
+        <p class="title">최근목록</p>
+        <p class="log" th:each="log : ${logs}" th:text="${log.books_nm}" th:attr="data-book-seq=${log.books_seq}"></p>
+        <p class="logAnalysis"><a style="color:#BD4F5E;" href="/logAnalysis">상세 조회</a></p>
+    </div>
+    <div class="book-body">
+        <div class="type1">
+            <div class="col-md-3 col-xs-6 col-sm-4 col-lg-2 view-layout" th:each="book : ${books}" th:attr="data-kind-cd=${book.books_kind_cd}">
+                <div class="book-list" th:attr="data-book-seq=${book.books_seq}">
+                    <div class="sub" th:text="${book.books_nm}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="type2 hide">
+            <div class="col-sm-12 view-layout" th:each="book:${books}" th:attr="data-kind-cd=${book.books_kind_cd}">
+                <div class="book-list" th:attr="data-book-seq=${book.books_seq}">
+                    <div class="sub" th:text="${book.books_nm}"></div>
+                </div>
+                <span th:text="${book.books_nm}"></span>
+            </div>
+        </div>
+    </div>
+    <div class="book-view hide">
+    </div>
+<script>
+
+    $('.log-menu .log').click(function() {
+        var seq = $(this).attr('data-book-seq');
+        $('.glyphicon-eye-open').trigger('click');
+        $('.book-list[data-book-seq='+seq+']').trigger('click');
+    })
+
+//    $(document).on('click', '.log-menu .log', function() {
+//        var seq = $(this).attr('data-book-seq');
+//        $('.glyphicon-eye-open').trigger('click');
+//        $('.book-list[data-book-seq='+seq+']').trigger('click');
+//    })
+
+    $('.glyphicon-eye-open').click(function() {
+        $('.log-menu').fadeToggle(400);
+        $('body').toggleClass('body-log-after');
+
+    })
+
+    $('.glyphicon-th-list').click(function() {
+        $('.type1').toggleClass('hide');
+        $('.type2').toggleClass('hide');
+    })
+
+    $('.type2 > .view-layout > span').click(function() {
+        $(this).closest('.view-layout').find('.book-list').trigger('click');
+    })
+
+    $('.book-list').click(function() {
+        var seq = $(this).attr('data-book-seq')
+        $('.book-header').hide();
+        $('.book-body').hide();
+        $('.book-view').empty().load('/bookView', function( response, status, xhr ) {
+            if ( status == "error" ) {
+                var msg = "Sorry but there was an error: ";
+                $( "#error" ).html( msg + xhr.status + " " + xhr.statusText );
+            }
+
+            if(status == 'success') {
+                $(this).html(response);
+
+                $.ajax({
+                    url:'/findUrlByBookSeq/'+seq,
+                    type:'post',
+                    async:false,
+                    success:function(data) {
+                        $('#area').bookRender(data,'', {
+                            chapter:'chapter-list'
+                        });
+                        $("#area").data( 'seq', seq);
+                    }
+                })
+            }
+        })
+
+        $('.book-view').toggleClass('hide');
+    })
+
+    $('#kind-menu li').click(function() {
+        var kind_cd = $(this).attr('data-kind-cd');
+        if(kind_cd == 'search') return false;
+        $('.type1 .view-layout').each(function() {
+            if(kind_cd == 'all') {
+                $(this).show();
+            } else {
+                if($(this).attr('data-kind-cd') == kind_cd) $(this).show();
+                else $(this).hide();
+            }
+        })
+        $('.type2 .view-layout').each(function() {
+            if(kind_cd == 'all') {
+                $(this).show();
+            } else {
+                if($(this).attr('data-kind-cd') == kind_cd) $(this).show();
+                else $(this).hide();
+            }
+        })
+    })
+
+    $('#kind-search').keyup(function() {
+        var str = $(this).val();
+        $('.type1 .view-layout').each(function() {
+            var nm = $(this).find('.sub').text();
+            if(nm.indexOf(str)>-1) $(this).show();
+            else $(this).hide();
+        })
+        $('.type2 .view-layout').each(function() {
+            var nm = $(this).find('span').text();
+            if(nm.indexOf(str)>-1) $(this).show();
+            else $(this).hide();
+        })
+    })
+
+
+    $('#dLabel').click(function() {
+        $('#kind-menu').fadeToggle();
+    })
+</script>
+</body>
+</html>
