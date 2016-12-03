@@ -49,7 +49,7 @@ public class SpingSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(new String[]{"/css/*", "/js/**/*", "/books/*", "/font/*", "/fonts/*", "/img/*", "/js/*"});
+        web.ignoring().antMatchers(new String[]{"/books/**/*", "/css/*", "/js/**/*", "/books/*", "/font/*", "/fonts/*", "/img/*", "/js/*"});
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by bangae1 on 2016-11-26.
@@ -54,9 +55,9 @@ public class BooksServiceImpl implements BooksService{
     public void save_enctype(Books books) {
         books.setBooks_file_nm(books.getFile().getOriginalFilename());
         BooksKind booksKind = this.booksKindDao.findOne(books.getBooks_kind_cd());
-        books.setBooks_url("/books"+booksKind.getBooks_kind_path() + "/"+books.getFile().getOriginalFilename());
+        books.setBooks_url("/books"+booksKind.getBooks_kind_path() + "/"+ UUID.randomUUID()+".epub");
         this.booksDao.save(books);
-        File filePath = new File(env.getProperty("multipart.path") + booksKind.getBooks_kind_path() + "/"+books.getFile().getOriginalFilename());
+        File filePath = new File(env.getProperty("multipart.path") + booksKind.getBooks_kind_path() + "/"+UUID.randomUUID()+".epub");
         try {
             books.getFile().transferTo(filePath);
         } catch (IOException e) {
