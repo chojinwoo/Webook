@@ -302,7 +302,7 @@ var SGrid = function () {
                     var lastIdx = $('#SGrid-table' + cnt).find('.SGrid-body tr:last-child').index();
                     var row = 0;
                     if(lastIdx > 0) {
-                        $('#SGrid-table' + cnt).find('.SGrid-body tr:last-child').after(ins_html.join(''))
+                        $('#SGrid-table' + cnt).find('.SGrid-body').find('tr').eq(idx).after(ins_html.join(''))
                     } else {
                         $('#SGrid-table' + cnt).find('.SGrid-body').append(ins_html.join(''))
                     }
@@ -504,7 +504,6 @@ var SGrid = function () {
                 html.push('<option></option>')
                 for (var i in data[type[0]]) {
                     var selected = '';
-                    console.log(i + "//"+val)
                     if (i == val)selected = 'selected';
                     html.push('<option value="' + i + '" ' + selected + '>' + data[type[0]][i] + '</option>');
                 }
