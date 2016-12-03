@@ -373,7 +373,10 @@ var SGrid = function () {
                             if(state == 'U')upd.push(list);
                             if(state == 'I')ins.push(list);
                         })
-                        if(ins.length > 0)option.functional.ins(ins, insData);
+                        if(ins.length > 0) {
+                            if(typeof option.colsFileInsBtn == 'object')option.functional.ins(insData);
+                            else option.functional.ins(ins);
+                        }
                         if(upd.length > 0)option.functional.upd(upd);
                         if(upd.length == 0 && ins.length == 0)alert('저장, 수정할 데이터가 없습니다.');
                     } catch(e) {

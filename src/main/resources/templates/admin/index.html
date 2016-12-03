@@ -102,10 +102,10 @@
                         }
                     })
                 },
-                ins: function (dd, form) {
+                ins: function (dd) {
                     $.ajax({
                         url:'/books_save_enctype',
-                        data:form,
+                        data:dd,
                         processData: false,
                         contentType: false,
                         type: 'post',
