@@ -1,5 +1,9 @@
+@font-face { font-family:uf_default; src: url(/font/Daum_Regular.ttf); }
+@font-face { font-family:uf_nanum; src: url(/font/NanumGothic.ttf); }
+
 body {
     background-color: #faffe5;
+    font-family: uf_nanum;
 }
 .book-header {
     text-align:center;

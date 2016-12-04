@@ -1,3 +1,6 @@
+@font-face { font-family:uf_default; src: url(/font/Daum_Regular.ttf); }
+@font-face { font-family:uf_nanum; src: url(/font/NanumGothic.ttf); }
+
 body {
     overflow: auto;
     width:100%;
@@ -111,8 +114,12 @@ body {
 }
 
 .book-title {
-    font-size:18px;
-    font-family: fantasy;
+    font-size:15px;
+    font-family: uf_default;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .setting-container {
