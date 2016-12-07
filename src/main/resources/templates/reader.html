@@ -11,6 +11,7 @@
 
     <!-- EPUBJS Renderer -->
     <script src="js/libs/jquery-3.1.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="js/epub.min.js"></script>
     <script src="js/libs/zip.min.js"></script>
     <!-- Full Screen -->
@@ -22,6 +23,7 @@
     <link href="css/font-awesome.css" rel="stylesheet"/>
     <link href="css/bootstrap.css" rel="stylesheet"/>
     <link href="css/reader.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
 
 
 </head>
@@ -170,23 +172,31 @@
         //Single swipe handler for left swipes
         swipeLeft:function(event, direction, distance, duration, fingerCount) {
             if(fingerCount == 0 || fingerCount == 1) {
-                if(distance > 100) {
+                if(distance > 75) {
+                    $('#area').hide()
                     Book.nextPage();
+                    $('#area').show('slide', {
+                        direction : 'right',
+                        duration: 500
+                    });
                 }
             }
         },
         swipeRight:function(event, direction, distance, duration, fingerCount) {
             if(fingerCount == 0 || fingerCount == 1) {
-                if(distance > 100) {
-                    Book.prevPage();
+                if(distance > 75) {
+                    $('#area').hide();
+                    k.prevPage();
+                    $('#area').show('slide', {
+                        direction : 'left',
+                        duration: 500
+                    });
                 }
             }
         },
         //Default is 75px, set to 0 for demo so any distance triggers swipe
         threshold:0
     });
-
-
 
     if(typeof screenfull !== 'undefined') {
         $('#full-screen').on("click", function() {
